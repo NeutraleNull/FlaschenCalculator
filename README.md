@@ -1,6 +1,7 @@
 # FlaschenCalculator
 
 Smoll calculator application built with C# and Blazor WebAssembly that uses Abstract Syntax Tree (AST) pattern for mathematical expression evaluation.
+**Try it out yourself here: https://neutralenull.github.io/FlaschenCalculator/**
 
 ## Table of Contents
 
