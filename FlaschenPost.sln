@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlaschenCalculator.Core", "FlaschenCalculator.Core\FlaschenCalculator.Core.csproj", "{023FF499-C69C-45A8-82CD-BF6B68AF874F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlaschenCalculator.Core.Test", "FlaschenCalculator.Core.Test\FlaschenCalculator.Core.Test.csproj", "{8CBBCF6C-A41F-4C41-BB30-8056A48BCC22}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlaschenCalculator.Infrastructure", "FlaschenCalculator.Infrastructure\FlaschenCalculator.Infrastructure.csproj", "{B1234567-89AB-CDEF-0123-456789ABCDEF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlaschenCalculator.Infrastructure.Test", "FlaschenCalculator.Infrastructure.Test\FlaschenCalculator.Infrastructure.Test.csproj", "{C2345678-9ABC-DEF0-1234-56789ABCDEF0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlaschenCalculator.Presentation.Console", "FlaschenCalculator.Presentation.Console\FlaschenCalculator.Presentation.Console.csproj", "{323048DC-406F-4EFE-AC41-38C5489F3E84}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlaschenCalculator.Presentation.Blazor", "FlaschenCalculator.Presentation.Blazor\FlaschenCalculator.Presentation.Blazor.csproj", "{D3456789-ABCD-EF01-2345-6789ABCDEF01}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{023FF499-C69C-45A8-82CD-BF6B68AF874F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{023FF499-C69C-45A8-82CD-BF6B68AF874F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{023FF499-C69C-45A8-82CD-BF6B68AF874F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{023FF499-C69C-45A8-82CD-BF6B68AF874F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CBBCF6C-A41F-4C41-BB30-8056A48BCC22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CBBCF6C-A41F-4C41-BB30-8056A48BCC22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CBBCF6C-A41F-4C41-BB30-8056A48BCC22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CBBCF6C-A41F-4C41-BB30-8056A48BCC22}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1234567-89AB-CDEF-0123-456789ABCDEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1234567-89AB-CDEF-0123-456789ABCDEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1234567-89AB-CDEF-0123-456789ABCDEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1234567-89AB-CDEF-0123-456789ABCDEF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2345678-9ABC-DEF0-1234-56789ABCDEF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2345678-9ABC-DEF0-1234-56789ABCDEF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2345678-9ABC-DEF0-1234-56789ABCDEF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2345678-9ABC-DEF0-1234-56789ABCDEF0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{323048DC-406F-4EFE-AC41-38C5489F3E84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{323048DC-406F-4EFE-AC41-38C5489F3E84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{323048DC-406F-4EFE-AC41-38C5489F3E84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{323048DC-406F-4EFE-AC41-38C5489F3E84}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3456789-ABCD-EF01-2345-6789ABCDEF01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3456789-ABCD-EF01-2345-6789ABCDEF01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3456789-ABCD-EF01-2345-6789ABCDEF01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3456789-ABCD-EF01-2345-6789ABCDEF01}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

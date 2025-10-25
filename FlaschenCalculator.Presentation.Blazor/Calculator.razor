@@ -1,0 +1,438 @@
+@page "/"
+@using FlaschenCalculator.Core
+
+<div class="container">
+    <div class="calculator">
+        <div class="calculator-header">
+            <h1>Flaschen Rechner</h1>
+        </div>
+        
+        <div class="display">
+            <div class="expression">@expression</div>
+            <div class="result">@result</div>
+        </div>
+        
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="error">@errorMessage</div>
+        }
+        
+        <div class="buttons">
+            <button class="btn btn-clear" @onclick="Clear">C</button>
+            <button class="btn btn-operator" @onclick="() => AppendChar('(')">(</button>
+            <button class="btn btn-operator" @onclick="() => AppendChar(')')">)</button>
+            <button class="btn btn-operator" @onclick="() => AppendChar('/')">÷</button>
+            
+            <button class="btn btn-operator" @onclick="AppendSqrt">√</button>
+            <button class="btn btn-operator" @onclick="() => AppendChar('^')">^</button>
+            <button class="btn btn-operator" style="visibility: hidden;"></button>
+            <button class="btn btn-operator" style="visibility: hidden;"></button>
+            
+            <button class="btn btn-number" @onclick="() => AppendChar('7')">7</button>
+            <button class="btn btn-number" @onclick="() => AppendChar('8')">8</button>
+            <button class="btn btn-number" @onclick="() => AppendChar('9')">9</button>
+            <button class="btn btn-operator" @onclick="() => AppendChar('*')">×</button>
+            
+            <button class="btn btn-number" @onclick="() => AppendChar('4')">4</button>
+            <button class="btn btn-number" @onclick="() => AppendChar('5')">5</button>
+            <button class="btn btn-number" @onclick="() => AppendChar('6')">6</button>
+            <button class="btn btn-operator" @onclick="() => AppendChar('-')">−</button>
+            
+            <button class="btn btn-number" @onclick="() => AppendChar('1')">1</button>
+            <button class="btn btn-number" @onclick="() => AppendChar('2')">2</button>
+            <button class="btn btn-number" @onclick="() => AppendChar('3')">3</button>
+            <button class="btn btn-operator" @onclick="() => AppendChar('+')">+</button>
+            
+            <button class="btn btn-number" @onclick="() => AppendChar('0')">0</button>
+            <button class="btn btn-number" @onclick="() => AppendChar('.')">.</button>
+            <button class="btn btn-backspace" @onclick="Backspace">⌫</button>
+            <button class="btn btn-equals" @onclick="Calculate">=</button>
+        </div>
+        
+        @if (parsedExpression != null)
+        {
+            <div class="show-tree-button-container">
+                <button class="btn btn-show-tree" @onclick="ToggleTree">
+                    @(showTree ? "Hide Expression Tree" : "Show Expression Tree")
+                </button>
+            </div>
+        }
+    </div>
+
+    @if (showTree && parsedExpression != null)
+    {
+        <div class="tree-panel">
+            <div class="tree-header">
+                <h2>Expression Tree</h2>
+                <button class="btn-close" @onclick="CloseTree">×</button>
+            </div>
+            <div class="tree-content">
+                <pre>@parsedExpression.ToString()</pre>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private string expression = "";
+    private string result = "";
+    private string errorMessage = "";
+    private IExpression? parsedExpression = null;
+    private bool showTree = false;
+
+    private void AppendChar(char c)
+    {
+        expression += c;
+        errorMessage = "";
+    }
+
+    private void AppendSqrt()
+    {
+        expression += "sqrt";
+        errorMessage = "";
+    }
+
+    private void Clear()
+    {
+        expression = "";
+        result = "";
+        errorMessage = "";
+        parsedExpression = null;
+        showTree = false;
+    }
+
+    private void Backspace()
+    {
+        if (expression.Length == 0)
+            return;
+            
+        errorMessage = "";
+        
+        // Remove trailing whitespace first
+        expression = expression.TrimEnd();
+        
+        if (expression.Length == 0)
+            return;
+        
+        char lastChar = expression[^1];
+        
+        // If it ends with t, check if it's "sqrt" and remove the entire keyword
+        if (lastChar == 't' && expression.Length >= 4 && expression.EndsWith("sqrt"))
+        {
+            expression = expression[..^4];
+        }
+        
+        // If it's a letter, remove consecutive letters (to handle any other keywords)
+        else if (char.IsLetter(lastChar))
+        {
+            int pos = expression.Length - 1;
+            while (pos > 0 && char.IsLetter(expression[pos - 1]))
+            {
+                pos--;
+            }
+            expression = expression[..pos];
+        }
+        else
+        {
+            expression = expression[..^1];
+        }
+    }
+
+    private void Calculate()
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(expression))
+            {
+                errorMessage = "Please enter an expression";
+                return;
+            }
+
+            parsedExpression = NumberParser.Parse(expression);
+            var calculatedResult = parsedExpression.Evaluate();
+            result = calculatedResult.ToString();
+            errorMessage = "";
+            showTree = false; // Reset tree visibility on new calculation
+        }
+        catch (Exception ex)
+        {
+            result = "";
+            errorMessage = ex.Message;
+            parsedExpression = null;
+            showTree = false;
+        }
+    }
+
+    private void ToggleTree()
+    {
+        showTree = !showTree;
+    }
+
+    private void CloseTree()
+    {
+        showTree = false;
+    }
+}
+
+<style>
+    .calculator {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        padding: 20px;
+        width: 100%;
+    }
+
+    .calculator-header {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .calculator-header h1 {
+        color: #667eea;
+        font-size: 1.8rem;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .display {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 15px;
+        min-height: 100px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .expression {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 1.2rem;
+        word-break: break-all;
+        min-height: 1.5rem;
+    }
+
+    .result {
+        color: white;
+        font-size: 2rem;
+        font-weight: bold;
+        text-align: right;
+        word-break: break-all;
+        min-height: 2.5rem;
+    }
+
+    .error {
+        background: #ff6b6b;
+        color: white;
+        padding: 10px;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        text-align: center;
+        font-size: 0.9rem;
+    }
+
+    .buttons {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+    }
+
+    .btn {
+        padding: 20px;
+        font-size: 1.5rem;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-weight: 600;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-number {
+        background: #f8f9fa;
+        color: #333;
+    }
+
+    .btn-number:hover {
+        background: #e9ecef;
+    }
+
+    .btn-operator {
+        background: #667eea;
+        color: white;
+    }
+
+    .btn-operator:hover {
+        background: #5568d3;
+    }
+
+    .btn-clear {
+        background: #ff6b6b;
+        color: white;
+    }
+
+    .btn-clear:hover {
+        background: #ee5a52;
+    }
+
+    .btn-backspace {
+        background: #ffa726;
+        color: white;
+    }
+
+    .btn-backspace:hover {
+        background: #fb8c00;
+    }
+
+    .btn-equals {
+        background: #51cf66;
+        color: white;
+    }
+
+    .btn-equals:hover {
+        background: #40c057;
+    }
+
+    .container {
+        display: flex;
+        gap: 20px;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .show-tree-button-container {
+        margin-top: 15px;
+        text-align: center;
+    }
+
+    .btn-show-tree {
+        background: #667eea;
+        color: white;
+        padding: 12px 24px;
+        font-size: 1rem;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-weight: 600;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-show-tree:hover {
+        background: #5568d3;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-show-tree:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .tree-panel {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        padding: 20px;
+        min-width: 400px;
+        max-width: 600px;
+        flex: 1;
+        animation: slideIn 0.3s ease-out;
+    }
+
+    @@keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateX(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .tree-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #667eea;
+    }
+
+    .tree-header h2 {
+        color: #667eea;
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .btn-close {
+        background: #ff6b6b;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        font-size: 1.8rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+        font-weight: bold;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-close:hover {
+        background: #ee5a52;
+        transform: scale(1.1);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-close:active {
+        transform: scale(0.95);
+    }
+
+    .tree-content {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+        overflow-x: auto;
+    }
+
+    .tree-content pre {
+        margin: 0;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 1rem;
+        color: #333;
+        white-space: pre;
+        line-height: 1.5;
+    }
+
+    @@media (max-width: 1024px) {
+        .container {
+            flex-direction: column;
+        }
+
+        .tree-panel {
+            min-width: 100%;
+            max-width: 100%;
+        }
+    }
+</style>

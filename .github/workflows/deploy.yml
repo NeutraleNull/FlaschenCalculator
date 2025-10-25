@@ -1,0 +1,49 @@
+name: Deploy to GitHub Pages
+
+# Run workflow on every push to the main branch
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+# Allow this job to clone the repo and create a page deployment
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  deploy-to-github-pages:
+    runs-on: ubuntu-latest
+    steps:
+    # Checkout the code
+    - uses: actions/checkout@v4
+
+    # Install .NET SDK
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0.x'
+
+    # Publish the Blazor WASM app
+    - name: Publish .NET Project
+      run: dotnet publish FlaschenCalculator.Presentation.Blazor/FlaschenCalculator.Presentation.Blazor.csproj -c Release -o release --nologo
+
+    # Change base tag in index.html from '/' to the repository name
+    - name: Change base-tag in index.html
+      run: sed -i 's/<base href="\/" \/>/<base href="\/${{ github.event.repository.name }}\/" \/>/g' release/wwwroot/index.html
+
+    # Add .nojekyll file to tell GitHub Pages to not treat this as a Jekyll project
+    - name: Add .nojekyll file
+      run: touch release/wwwroot/.nojekyll
+
+    # Upload the published website as an artifact
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: release/wwwroot
+
+    # Deploy the artifact to GitHub Pages
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
